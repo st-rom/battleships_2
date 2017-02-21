@@ -15,6 +15,7 @@ class Ship:
             damaged_spot = zil[-1] - self.bow[-1]
         self._hit[damaged_spot] = True
 
+
 class Player:
     def __init__(self, pl_name):
         self.pl_name = pl_name
@@ -40,3 +41,14 @@ class Field:
 
     def shoot_at(self, zil):
         self._ships[zil[0]][0] = self._ships[zil[0]][0][:zil[1]] + '•' + self._ships[zil[0]][0][zil[1] + 1:]
+        return
+
+
+class Game:
+    def __init__(self, field, players, current_player):
+        pl1 = input('Player 1, enter your name: ')
+        pl2 = input('Player 2, enter your name: ')
+        self._field = [Field(), Field()]
+        self._players = [Player(pl1), Player(pl2)]
+        self._current_player = current_player
+
