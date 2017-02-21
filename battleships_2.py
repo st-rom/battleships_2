@@ -1,3 +1,4 @@
+from generator import *
 class Ship:
     def __init__(self, bow, horizontal, length):
         self.bow = bow
@@ -37,11 +38,45 @@ class Player:
 class Field:
     def __init__(self, ships):
         #self._ships = [[Ship(self.bow), Ship(self.horizontal), Ship(self.length), Ship(self.hit)]])
-        self._ships = [[' '*10], [' '*10], [' '*10], [' '*10], [' '*10], [' '*10], [' '*10], [' '*10], [' '*10], [' '*10]]
-
+        self._ships = [[None for i in range(10)] for j in range(10)]
+        mapa = generate_field()
+        for i in
     def shoot_at(self, zil):
-        self._ships[zil[0]][0] = self._ships[zil[0]][0][:zil[1]] + '•' + self._ships[zil[0]][0][zil[1] + 1:]
-        return
+        #self._ships[zil[0]][0] = self._ships[zil[0]][0][:zil[1]] + '•' + self._ships[zil[0]][0][zil[1] + 1:]
+        if self._ships[zil[0]][zil[1]] is None:
+            self._ships[zil[0]][zil[1]] = False
+        else:
+            self._ships[zil[0]][zil[1]] = True
+
+    def field_without_ships(self):
+        for i in range(len(self._ships)):
+            for j in range(len(self._ships[i])):
+                if self._ships[i][j] is True:
+                    self._ships[i][j] = 'X'
+                elif self._ships[i][j] is False:
+                    self._ships[i][j] = '•'
+                else:
+                    self._ships[i][j] = ' '
+        for i in range(len(self._ships)):
+            self._ships[i] = ''.join(self._ships[i])
+        self._ships = '\n'.join(self._ships)
+        return self._ships
+
+    def field_with_ships(self):
+        for i in range(len(self._ships)):
+            for j in range(len(self._ships[i])):
+                if self._ships[i][j] is True:
+                    self._ships[i][j] = 'X'
+                elif self._ships[i][j] is False:
+                    self._ships[i][j] = '•'
+                elif self._ships[i][j] is None:
+                    self._ships[i][j] = ' '
+                else:
+                    self._ships[i][j] = '*'
+        for i in range(len(self._ships)):
+            self._ships[i] = ''.join(self._ships[i])
+        self._ships = '\n'.join(self._ships)
+        return self._ships
 
 
 class Game:
@@ -50,5 +85,15 @@ class Game:
         pl2 = input('Player 2, enter your name: ')
         self._field = [Field(), Field()]
         self._players = [Player(pl1), Player(pl2)]
-        self._current_player = current_player
+        self._current_player = 0
+
+    def read_position(self):
+        pos = Player.read_position()
+        return pos
+
+    def field_without_ships(self):
+        print(self._field[self._current_player].field_with_ships())
+
+    def field_with_ships(self):
+        print(self._field[self._current_player].field_with_ships())
 
