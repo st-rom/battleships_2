@@ -185,7 +185,7 @@ while True:
         print('You won the game! Congratulations!')
     #     winner = g._players[(g._current_player - 1) % 2]._name
     #     print(winner, 'WON!')
-         break
+        break
     print('\n')
     g.field_with_ships(g._current_player)
     print('\n')
