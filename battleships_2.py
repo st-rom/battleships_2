@@ -1,4 +1,6 @@
 from generator import *
+
+
 class Ship:
     def __init__(self, bow, horizontal, length):
         self.bow = bow
@@ -36,15 +38,56 @@ class Player:
 
 
 class Field:
-    def __init__(self, ships):
-        #self._ships = [[Ship(self.bow), Ship(self.horizontal), Ship(self.length), Ship(self.hit)]])
+    def __init__(self):
         self._ships = [[None for i in range(10)] for j in range(10)]
         mapa = generate_field()
-        for i in
+        for i in range(len(mapa)):
+            for j in range(len(mapa)):
+                if mapa[i][0][j] == '*' or mapa[i][0][j] == 'X':
+                    ship_pos =[(i, j)]
+                    mapa[i][0] = mapa[i][0][:j] + '#' + mapa[i][0][(j + 1):]
+                    a = b = c = d = size = 1
+                    hor = True
+                    for ij in range(3):
+                        if i - a > -1:
+                            if mapa[i - a][0][j] == '*' or mapa[i - a][0][j] == 'X':
+                                mapa[i - a][0] = mapa[i - a][0][:j] + '#' + mapa[i - a][0][(j + 1):]
+                                ship_pos.append((i - a, j))
+                                a += 1
+                                size += 1
+                                hor = False
+                        if i + b < 10:
+                            if mapa[i + b][0][j] == '*' or mapa[i + b][0][j] == 'X':
+                                mapa[i + b][0] = mapa[i + b][0][:j] + '#' + mapa[i + b][0][(j + 1):]
+                                ship_pos.append((i + b, j))
+                                b += 1
+                                size += 1
+                                hor = False
+                        if j - c > -1:
+                            if mapa[i][0][j - c] == '*' or mapa[i][0][j - c] == 'X':
+                                mapa[i][0] = mapa[i][0][:(j - c)] + '#' + mapa[i][0][(j - c + 1):]
+                                ship_pos.append((i, j - c))
+                                c += 1
+                                size += 1
+                                hor = True
+                        if j + d < 10:
+                            if mapa[i][0][j + d] == '*' or mapa[i][0][j + d] == 'X':
+                                mapa[i][0] = mapa[i][0][:(j + d)] + '#' + mapa[i][0][(j + d + 1):]
+                                ship_pos.append((i, j + d))
+                                d += 1
+                                size += 1
+                                hor = True
+                    for ii in range(len(ship_pos)):
+                        if hor is True:
+                            self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], True, (1, size))
+                        else:
+                            self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], False, (size, 1))
+                            
     def shoot_at(self, zil):
-        #self._ships[zil[0]][0] = self._ships[zil[0]][0][:zil[1]] + '•' + self._ships[zil[0]][0][zil[1] + 1:]
         if self._ships[zil[0]][zil[1]] is None:
             self._ships[zil[0]][zil[1]] = False
+        elif self._ships[zil[0]][zil[1]] is True or self._ships[zil[0]][zil[1]] is False:
+            print('You shot the same spot twice!')
         else:
             self._ships[zil[0]][zil[1]] = True
 
