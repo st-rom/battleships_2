@@ -190,9 +190,9 @@ while True:
     g.field_with_ships(g._current_player)
     print('\n')
     g.field_without_ships((g._current_player - 1) % 2)
-    #print(g._field[g._current_player].counter)
+    print(g._field[g._current_player].counter)
     if not g.shoot_at(g._current_player, (g._current_player + 1) % 2):
-        input("Press something to start")
+        input(" Press something to start")
         g._current_player = (g._current_player + 1) % 2
         os.system('cls')
-    input('Press any button')
+    input('Press any button ')
