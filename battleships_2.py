@@ -8,9 +8,9 @@ class Ship:
         self.horizontal = horizontal
         self._length = length
         if horizontal is True:
-            self._hit = [False] * length[-1]
+            self._hit = [False for i in range(length[-1])]
         else:
-            self._hit = [False] * length[0]
+            self._hit = [False for i in range(length[0])]
 
     def shoot_at(self, zil):
         if self.horizontal is False:
@@ -86,24 +86,36 @@ class Field:
                                 size += 1
                                 hor = True
                        #         self.counter += 1
-                    for ii in range(len(ship_pos)):
-                        if hor is True:
-                            self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], True, (1, size))
-                        else:
-                            self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], False, (size, 1))
+                    
+                    if hor is True:
+                        examp = Ship(ship_pos[0], True, (1, size))
+                        for ii in range(len(ship_pos)):
+                            self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = examp
+                    else:
+                        examp = Ship(ship_pos[0], False, (size, 1))
+                        for ii in range(len(ship_pos)):
+                            self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = examp
+                        
+        self.di = {}
+        for i in range(10):
+            for j in range(10):
+                if self._ships[i][j]:
+                    self.di[self._ships[i][j]]  = self.di.get(self._ships[i][j],0) + 1
+        print(self.di)
     def shoot_at(self, zil):
         if self._ships[zil[0]][zil[1]] is None:
             self._ships[zil[0]][zil[1]] = False
         elif self._ships[zil[0]][zil[1]] is True or self._ships[zil[0]][zil[1]] is False:
-            print('You shot the same spot twice!')
+            print(' You shot the same spot twice!')
         else:
+            self._ships[zil[0]][zil[1]].shoot_at(zil)
             infa = self._ships[zil[0]][zil[1]]
             self._ships[zil[0]][zil[1]] = True
  #       print(self._ships[zil[0]][zil[1]])
             self.counter += 1
-            print('Nice! Shoot again!')
+            print(' Nice! Shoot again!')
             return infa
-        print('Missed')
+        print(' Missed')
         return self._ships[zil[0]][zil[1]]
 
     def field_without_ships(self):
@@ -168,21 +180,24 @@ class Game:
     def field_with_ships(self, ind):
         print(self._field[ind].field_with_ships())
 
-    def shoot_at(self, pind, find):
+    def shooter(self, pind, fin):
         zil = self._players[pind].read_position()
-        ship = self._field[find].shoot_at(zil)
-        if ship != False:
+        ship = self._field[fin].shoot_at(zil)
+        if ship != False:            
             leng = ship._length[1] if ship.horizontal else ship._length[0]
+           # ship._hit[ship._hit.index(False)] = True
+           # print(ship._hit)
             if ship._hit == [True for i in range(leng)]:
-                print('\n', 'You destroyed the ship!!!')
+                print('\n', ' You DESTROYED the ship!!!')
             else:
-                print('\n', 'You damaged the ship!')
+                print('\n', ' You damaged the ship!')
             return ship
+
 g = Game()
 while True:
     os.system('cls')
     if g._field[g._current_player].counter == 20:
-        print('You won the game! Congratulations!')
+        print(' You won the game! Congratulations!')
     #     winner = g._players[(g._current_player - 1) % 2]._name
     #     print(winner, 'WON!')
         break
@@ -190,9 +205,10 @@ while True:
     g.field_with_ships(g._current_player)
     print('\n')
     g.field_without_ships((g._current_player - 1) % 2)
-    print(g._field[g._current_player].counter)
-    if not g.shoot_at(g._current_player, (g._current_player + 1) % 2):
+    #print(g._field[g._current_player].di)
+#    print(g._field[(g._current_player + 1 )%2].counter)
+    if not g.shooter(g._current_player, (g._current_player + 1) % 2):
         input(" Press something to start")
         g._current_player = (g._current_player + 1) % 2
         os.system('cls')
-    input('Press any button ')
+    input(' Press any button ')
