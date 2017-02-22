@@ -48,7 +48,7 @@ class Field:
         for i in range(len(self.mapa)):
             for j in range(len(self.mapa)):
                 if self.mapa[i][0][j] == '*' or self.mapa[i][0][j] == 'X':
-                    self.counter += 1
+                   # self.counter += 1
                     ship_pos =[(i, j)]
                     self.mapa[i][0] = self.mapa[i][0][:j] + '#' + self.mapa[i][0][(j + 1):]
                     a = b = c = d = size = 1
@@ -61,7 +61,7 @@ class Field:
                                 a += 1
                                 size += 1
                                 hor = False
-                                self.counter += 1
+                    #            self.counter += 1
                         if i + b < 10:
                             if self.mapa[i + b][0][j] == '*' or self.mapa[i + b][0][j] == 'X':
                                 self.mapa[i + b][0] = self.mapa[i + b][0][:j] + '#' + self.mapa[i + b][0][(j + 1):]
@@ -69,7 +69,7 @@ class Field:
                                 b += 1
                                 size += 1
                                 hor = False
-                                self.counter += 1
+                     #           self.counter += 1
                         if j - c > -1:
                             if self.mapa[i][0][j - c] == '*' or self.mapa[i][0][j - c] == 'X':
                                 self.mapa[i][0] = self.mapa[i][0][:(j - c)] + '#' + self.mapa[i][0][(j - c + 1):]
@@ -77,7 +77,7 @@ class Field:
                                 c += 1
                                 size += 1
                                 hor = True
-                                self.counter += 1
+                      #          self.counter += 1
                         if j + d < 10:
                             if self.mapa[i][0][j + d] == '*' or self.mapa[i][0][j + d] == 'X':
                                 self.mapa[i][0] = self.mapa[i][0][:(j + d)] + '#' + self.mapa[i][0][(j + d + 1):]
@@ -85,7 +85,7 @@ class Field:
                                 d += 1
                                 size += 1
                                 hor = True
-                                self.counter += 1
+                       #         self.counter += 1
                     for ii in range(len(ship_pos)):
                         if hor is True:
                             self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], True, (1, size))
@@ -100,6 +100,7 @@ class Field:
             infa = self._ships[zil[0]][zil[1]]
             self._ships[zil[0]][zil[1]] = True
  #       print(self._ships[zil[0]][zil[1]])
+            self.counter += 1
             print('Nice! Shoot again!')
             return infa
         print('Missed')
@@ -167,23 +168,6 @@ class Game:
     def field_with_ships(self, ind):
         print(self._field[ind].field_with_ships())
 
-
-
-
-#    def winner(self, ind):
-#        popav = 0
-#        self._shipsy =
-#        for i in self._ships:
-#            for j in self._ships:
-#                if j is True:
-#                    popav += 1
-#        if popav == 20:
-#            #print('CONGRATULATIONS! ' + self._players[ind] + ' won the game!')
-#            return True
-#        else:
-#            return False
-
-
     def shoot_at(self, pind, find):
         zil = self._players[pind].read_position()
         ship = self._field[find].shoot_at(zil)
@@ -197,15 +181,18 @@ class Game:
 g = Game()
 while True:
     os.system('cls')
-    # if g.winner((g._current_player - 1) % 2):
+    if g._field[g._current_player].counter == 20:
+        print('You won the game! Congratulations!')
     #     winner = g._players[(g._current_player - 1) % 2]._name
     #     print(winner, 'WON!')
-    #     break
+         break
     print('\n')
     g.field_with_ships(g._current_player)
-    #print(g._field[g._current_player].counter)
     print('\n')
     g.field_without_ships((g._current_player - 1) % 2)
+    #print(g._field[g._current_player].counter)
     if not g.shoot_at(g._current_player, (g._current_player + 1) % 2):
-        input("It's another player's turn! Press something to start")
+        input("Press something to start")
         g._current_player = (g._current_player + 1) % 2
+        os.system('cls')
+    input('Press any button')
