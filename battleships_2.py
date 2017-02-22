@@ -35,7 +35,7 @@ class Player:
         if pos[0].isupper():
             spot = (int(pos[1:]) - 1, ord(pos[0]) - 65)
         else:
-            spot = (int(pos[1:] - 1), ord(pos[0]) - 97)
+            spot = (int(pos[1:]) - 1, ord(pos[0]) - 97)
         return spot
 
 
@@ -91,16 +91,18 @@ class Field:
                             self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], True, (1, size))
                         else:
                             self._ships[ship_pos[ii][0]][ship_pos[ii][-1]] = Ship(ship_pos[0], False, (size, 1))
-
     def shoot_at(self, zil):
-        print(zil, self._ships)
         if self._ships[zil[0]][zil[1]] is None:
             self._ships[zil[0]][zil[1]] = False
         elif self._ships[zil[0]][zil[1]] is True or self._ships[zil[0]][zil[1]] is False:
             print('You shot the same spot twice!')
         else:
+            infa = self._ships[zil[0]][zil[1]]
             self._ships[zil[0]][zil[1]] = True
-        print(self._ships[zil[0]][zil[1]])
+ #       print(self._ships[zil[0]][zil[1]])
+            print('Nice! Shoot again!')
+            return infa
+        print('Missed')
         return self._ships[zil[0]][zil[1]]
 
     def field_without_ships(self):
@@ -113,9 +115,9 @@ class Field:
                 elif self._ships[i][j] is False:
                     strships[i + 1][j] = '•'
                 else:
-                    self._ships[i][j] = ' '
+                    strships[i + 1][j] = ' '
         for i in range(len(self._ships)):
-            strships[i + 1] = ''.join(self._ships[i])
+            strships[i + 1] = ''.join(strships[i + 1])
             if i + 1 < 10:
                 strships[i + 1] = ' ' + str(i + 1) + strships[i + 1]
             else:
@@ -124,20 +126,20 @@ class Field:
         return strships
 
     def field_with_ships(self):
+        strshipsw = [[' ' for i in range(10)] for j in range(10)]
+        strshipsw.insert(0, '  ABCDEFGHIJ')
         for i in range(len(self._ships)):
             for j in range(len(self._ships[i])):
                 if self._ships[i][j] is True:
-                    self._ships[i][j] = 'X'
+                    strshipsw[i + 1][j] = 'X'
                 elif self._ships[i][j] is False:
-                    self._ships[i][j] = '•'
+                    strshipsw[i + 1][j] = '•'
                 elif self._ships[i][j] is None:
-                    self._ships[i][j] = ' '
+                    strshipsw[i + 1][j] = ' '
                 else:
-                    self._ships[i][j] = '*'
-        strshipsw = [[]] * 10
-        strshipsw.insert(0, '  ABCDEFGHIJ')
+                    strshipsw[i + 1][j] = '*'
         for i in range(len(self._ships)):
-            strshipsw[i + 1] = ''.join(self._ships[i])
+            strshipsw[i + 1] = ''.join(strshipsw[i + 1])
             if i + 1 < 10:
                 strshipsw[i + 1] = ' ' + str(i + 1) + strshipsw[i + 1]
             else:
@@ -185,21 +187,25 @@ class Game:
     def shoot_at(self, pind, find):
         zil = self._players[pind].read_position()
         ship = self._field[find].shoot_at(zil)
-        len = ship._length[1] if ship.horizontal else ship._length[0]
-        if ship._hit == [True for i in range(ship_len)]:
-            #self._players[pind].sunk_ships += 1
-            print('\n', 'You destroyed the ship!!!')
-        else:
-            print('\n', 'You damaged the ship!')
-        return ship
+        if ship != False:
+            leng = ship._length[1] if ship.horizontal else ship._length[0]
+            if ship._hit == [True for i in range(leng)]:
+                print('\n', 'You destroyed the ship!!!')
+            else:
+                print('\n', 'You damaged the ship!')
+            return ship
 g = Game()
 while True:
     os.system('cls')
+    # if g.winner((g._current_player - 1) % 2):
+    #     winner = g._players[(g._current_player - 1) % 2]._name
+    #     print(winner, 'WON!')
+    #     break
     print('\n')
     g.field_with_ships(g._current_player)
     #print(g._field[g._current_player].counter)
     print('\n')
-    g.field_with_ships((g._current_player - 1) % 2)
+    g.field_without_ships((g._current_player - 1) % 2)
     if not g.shoot_at(g._current_player, (g._current_player + 1) % 2):
         input("It's another player's turn! Press something to start")
         g._current_player = (g._current_player + 1) % 2
